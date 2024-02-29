@@ -4,7 +4,8 @@ import mongoosePaginate from "mongoose-paginate-v2";
 const collection = "orders";
 const schema = new Schema(
   {
-    pizza_id: { type: Types.ObjectId, required: true, ref: "pizzas" },
+    user_id: { type: Types.ObjectId, required: true, ref: "users" },
+    clothe_id: { type: Types.ObjectId, required: true, ref: "clothes" },
     quantity: { type: Number, default: 1 },
     state: {
       type: String,
@@ -18,10 +19,10 @@ const schema = new Schema(
 schema.plugin(mongoosePaginate);
 
 schema.pre("find", function () {
-  this.populate("user_id", "-password -createdAt -updatedAt -__v");
+  this.populate("user_id", "-createdAt -updatedAt -__v");
 });
 schema.pre("find", function () {
-  this.populate("event_id", "title poster place price");
+  this.populate("clothe_id", "-createdAt -updatedAt -__v");
 });
 
 const Order = model(collection, schema);
