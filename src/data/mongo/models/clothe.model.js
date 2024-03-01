@@ -4,7 +4,7 @@ import mongoosePaginate from "mongoose-paginate-v2";
 const collection = "clothes";
 const schema = new Schema(
   {
-    name: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true, index: true },
     size_id: { type: Types.ObjectId, required: true, ref: "sizes" },
     category_id: { type: Types.ObjectId, required: true, ref: "categories" },
     stock: { type: Number, default: 1 },
