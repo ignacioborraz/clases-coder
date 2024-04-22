@@ -2,7 +2,7 @@ import { connect } from "mongoose";
 
 async function dbConnection() {
   try {
-    await connect(process.env.DB_LINK);
+    await connect(process.env.MONGO_URI);
     console.log("database connected");
   } catch (error) {
     console.log(error);
