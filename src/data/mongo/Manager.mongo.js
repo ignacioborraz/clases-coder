@@ -13,7 +13,7 @@ class Manager {
   async read(filter) {
     try {
       //filter para filtrar por el parámetro que se pase
-      const all = await this.Model.find();
+      const all = await this.Model.find(filter);
       return all;
     } catch (error) {
       throw error;
