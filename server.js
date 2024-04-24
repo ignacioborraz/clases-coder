@@ -4,6 +4,7 @@ import morgan from "morgan";
 import { engine } from "express-handlebars";
 
 import router from "./src/routers/index.router.js";
+import apiRouter from "./src/routers/api/index.router.api.js";
 import errorHandler from "./src/middlewares/errorHandler.js";
 import pathHandler from "./src/middlewares/pathHandler.js";
 import __dirname from "./utils.js";
@@ -31,5 +32,6 @@ server.use(morgan("dev"));
 
 //endpoints
 server.use("/", router);
+server.use("/api", apiRouter); 
 server.use(errorHandler);
 server.use(pathHandler);
