@@ -17,11 +17,32 @@ const schema = new Schema(
   }
 );
 
-schema.pre("find", function () {
-  this.populate("user_id", "email role");
-});
+//POPULAR CON EL PARÁMETRO (PROPIEDAD A POBLAR)
 schema.pre("find", function () {
   this.populate("clothe_id");
+});
+
+//POPULAR CON EL OBJETO
+//PATH: propiedad a poblar
+//SELECT: selectores del objeto a poblar
+//POPULATE: para poblar otro campo
+//este POPULATE DE DENTRO DEL POPULATE ADMITE LOS CAMPOS
+  //PATH
+  //SELECT
+  //POPULATE
+schema.pre("find", function () {
+  this.populate({
+    path: "user_id",
+    select: "email role",
+    /* populate: {
+      path: "country_id",
+      select: "name city_id",
+      populate: {
+        path: "city_id",
+        select: "name"
+      }
+    } */
+  });
 });
 
 const Cart = model(collection, schema);
