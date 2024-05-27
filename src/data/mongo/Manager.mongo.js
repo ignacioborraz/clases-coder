@@ -12,11 +12,16 @@ class Manager {
   }
   async read(filter) {
     try {
-
-      //filter para filtrar por el parámetro que se pase
-      const all = await this.Model.find(filter);
+      const all = await this.Model.find(filter).lean();
       return all;
-
+    } catch (error) {
+      throw error;
+    }
+  }
+  async paginate({ filter, opts }) {
+    try {
+      const all = await this.Model.paginate(filter, opts);
+      return all;
     } catch (error) {
       throw error;
     }

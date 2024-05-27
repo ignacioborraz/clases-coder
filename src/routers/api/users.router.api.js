@@ -1,41 +1,37 @@
 import { Router } from "express";
-import usersManager from "../../data/mongo/managers/UsersManager.mongo.js";
+import passportCb from "../../middlewares/passportCb.mid.js";
 
-const usersApi = Router();
+const sessionsRouter = Router();
 
-usersApi.post("/", async (req, res, next) => {
+sessionsRouter.post("/register", passportCb("register"), register);
+sessionsRouter.post("/login", passportCb("login"), login);
+sessionsRouter.post("/signout", signout);
+
+function register(req, res, next) {
   try {
-    const data = req.body;
-    const one = await usersManager.create(data);
-    return res.json({
-      statusCode: 201,
-      message: "CREATED ID: " + one.id,
+    return res.json({ statusCode: 201, message: "Registered!" });
+  } catch (error) {
+    return next(error);
+  }
+}
+function login(req, res, next) {
+  try {
+    return res.cookie("token", req.user.token).json({
+      statusCode: 200,
+      message: "Logged in!",
     });
   } catch (error) {
     return next(error);
   }
-});
-
-usersApi.get("/:email", async (req, res, next) => {
+}
+function signout(req, res, next) {
   try {
-    const { email } = req.params;
-    let one = undefined;
-    if (email) {
-      one = await usersManager.readByEmail(email);
-    }
-    if (one) {
-      return res.json({
-        statusCode: 200,
-        response: one,
-      });
-    } else {
-      const error = new Error("Item not found");
-      error.statusCode = 404;
-      throw error;
-    }
+    return res
+      .clearCookie("token")
+      .json({ statusCode: 200, message: "Signed out!" });
   } catch (error) {
     return next(error);
   }
-});
+}
 
-export default usersApi;
+export default sessionsRouter;

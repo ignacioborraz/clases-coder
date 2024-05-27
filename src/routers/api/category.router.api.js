@@ -1,31 +1,40 @@
-import { Router } from "express";
+import CustomRouter from "../CustomRouter.js";
 import categoryManager from "../../data/mongo/managers/CategoriesManager.mongo.js";
 
-const categoryRouter = Router();
+class CategoriesRouter extends CustomRouter {
+  init() {
+    this.create("/", ["ADMIN"], create);
+    this.read("/", ["PUBLIC"], read);
+  }
+}
 
-categoryRouter.post("/", async (req, res, next) => {
+const categoriesRouter = new CategoriesRouter();
+export default categoriesRouter.getRouter();
+
+async function create(req, res, next) {
   try {
     const data = req.body;
-    const one = await categoryManager.create(data);
+    const size = await categoryManager.create(data);
     return res.json({
       statusCode: 201,
-      message: "Category created",
-      response: one,
+      message: "CREATED",
+      response: size,
     });
   } catch (error) {
     return next(error);
   }
-});
-categoryRouter.get("/", async (req, res, next) => {
+}
+async function read(req, res, next) {
   try {
-    const all = await categoryManager.read();
-    return res.json({
-      statusCode: 200,
-      message: "READ",
-      response: all,
-    });
+    const sizes = await categoryManager.read();
+    if (sizes.length > 0) {
+      return res.json({
+        statusCode: 200,
+        message: "READ ALL CATEGORIES",
+        response: sizes,
+      });
+    }
   } catch (error) {
     return next(error);
   }
-});
-export default categoryRouter;
+}

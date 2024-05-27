@@ -1,15 +1,18 @@
-import { Router } from "express";
+import CustomRouter from "../CustomRouter.js";
 
-const viewsRouter = Router();
-
-viewsRouter.get("/", async (req, res, next) => {
-  try {
-    return res.render("index", {
-      title: "INDEX",
+class ViewsRouter extends CustomRouter {
+  init() {
+    this.read("/", ["PUBLIC"], async (req, res, next) => {
+      try {
+        return res.render("index", {
+          title: "INDEX",
+        });
+      } catch (error) {
+        return next(error);
+      }
     });
-  } catch (error) {
-    return next(error);
   }
-});
+}
 
-export default viewsRouter;
+const viewsRouter = new ViewsRouter();
+export default viewsRouter.getRouter();

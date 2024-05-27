@@ -27,5 +27,11 @@ const schema = new Schema(
     timestamps: true,
   }
 );
+
+schema.pre("find", function () {
+  this.populate("category_id", "category");
+  this.populate("size_id", "size");
+});
+
 const Clothe = model(collection, schema);
 export default Clothe;

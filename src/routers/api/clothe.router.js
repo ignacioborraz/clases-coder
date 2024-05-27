@@ -1,26 +1,18 @@
-import { Router, response } from "express";
+import { Router } from "express";
 import clotheManager from "../../data/mongo/managers/ClothesManager.mongo.js";
 
 const clotheRouter = Router();
 
-clotheRouter.get("/", async (req, res, next) => {
-  try {
-    const all = await clotheManager.read();
-    return res.json({
-      statusCode: 200,
-      message: "READ",
-      response: all,
-    });
-  } catch (error) {
-    return next(error);
-  }
-});
-clotheRouter.post("/", async (req, res, next) => {
+clotheRouter.post("/", create);
+clotheRouter.get("/", read);
+
+export default clotheRouter;
+
+async function create(req, res, next) {
   try {
     const data = req.body;
-    //console.log(data)
+    //aplicar politicas para que sólo admins puedan crear prendas
     const one = await clotheManager.create(data);
-    //console.log(one)
     return res.json({
       statusCode: 201,
       message: "CREATED",
@@ -29,6 +21,16 @@ clotheRouter.post("/", async (req, res, next) => {
   } catch (error) {
     return next(error);
   }
-});
-
-export default clotheRouter;
+}
+async function read(req, res, next) {
+  try {
+    const all = await clotheManager.read();
+    return res.json({
+      statusCode: 200,
+      message: "READ ALL CLOTHES",
+      response: all,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
