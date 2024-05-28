@@ -4,6 +4,8 @@ import CustomRouter from "../CustomRouter.js";
 class AuthRouter extends CustomRouter {
   init() {
     this.create("/login", ["PUBLIC"], passportCb("login"), login);
+    this.create("/register", ["PUBLIC"], passportCb("register"), register);
+    this.create("/signout", ["USER"], signout);
   }
 }
 
@@ -12,7 +14,9 @@ class AuthRouter extends CustomRouter {
 
 function register(req, res, next) {
   try {
-    return res.json({ statusCode: 201, message: "Registered!" });
+    return res.message201("Registered!")
+    // return res.json({ statusCode: 201, message: "Registered!" });
+
   } catch (error) {
     return next(error);
   }
@@ -30,9 +34,8 @@ function login(req, res, next) {
 function signout(req, res, next) {
   try {
     //condicionar que pasa si no hay token (donde corresponde)
-    return res
-      .clearCookie("token")
-      .json({ statusCode: 200, message: "Signed out!" });
+    return res.clearCookie("token").message200("Signed out!")
+      // .json({ statusCode: 200, message: "Signed out!" });
   } catch (error) {
     return next(error);
   }
