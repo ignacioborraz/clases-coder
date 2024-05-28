@@ -1,11 +1,14 @@
-import { Router } from "express";
 import passportCb from "../../middlewares/passportCb.mid.js";
+import CustomRouter from "../CustomRouter.js";
 
-const sessionsRouter = Router();
+class AuthRouter extends CustomRouter {
+  init() {
+    this.create("/login", ["PUBLIC"], passportCb("login"), login);
+  }
+}
 
-sessionsRouter.post("/register", passportCb("register"), register);
-sessionsRouter.post("/login", passportCb("login"), login);
-sessionsRouter.post("/signout", signout);
+//sessionsRouter.post("/register", passportCb("register"), register);
+//sessionsRouter.post("/signout", signout);
 
 function register(req, res, next) {
   try {
@@ -26,6 +29,7 @@ function login(req, res, next) {
 }
 function signout(req, res, next) {
   try {
+    //condicionar que pasa si no hay token (donde corresponde)
     return res
       .clearCookie("token")
       .json({ statusCode: 200, message: "Signed out!" });
@@ -34,4 +38,5 @@ function signout(req, res, next) {
   }
 }
 
-export default sessionsRouter;
+const authRouter = new AuthRouter();
+export default authRouter.getRouter();
