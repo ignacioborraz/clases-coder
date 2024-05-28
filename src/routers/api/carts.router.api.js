@@ -1,12 +1,17 @@
-import { Router } from "express";
+import CustomRouter from '../CustomRouter.js'
 import cartsManager from "../../data/mongo/managers/CartsManager.mongo.js";
 
-const cartsRouter = Router();
+class CartsRouter extends CustomRouter {
 
-cartsRouter.post("/", create);
-cartsRouter.get("/", read);
+  init() {
+    this.create("/", ["USER"], create);
+    this.read("/", ["USER"], read);
+  }
+}
 
-export default cartsRouter;
+
+const cartsRouter = new CartsRouter()
+export default cartsRouter.getRouter()
 
 async function create(req, res, next) {
   try {
@@ -15,11 +20,10 @@ async function create(req, res, next) {
     console.log(req.user);
     data.user_id = req.user._id;
     const one = await cartsManager.create(data);
-    return res.json({
-      statusCode: 201,
-      message: "CREATED",
-      response: one,
-    });
+    //Se envía con one el objeto creado completo
+    return res.response201("CREATED", one);
+    //Si se quisiera enviar solo el id, se envía un objeto con la propiedad 
+    //return res.response201("CREATED", {id: one._id});
   } catch (error) {
     return next(error);
   }
@@ -32,16 +36,10 @@ async function read(req, res, next) {
     if (user_id) {
       const all = await cartsManager.read({ user_id });
       if (all.length > 0) {
-        return res.json({
-          statusCode: 200,
-          message: "READ",
-          response: all,
-        });
+        return res.response200(all);
       }
     }
-    const error = new Error("NOT FOUND");
-    error.statusCode = 404;
-    throw error;
+    return res.error404()
   } catch (error) {
     return next(error);
   }

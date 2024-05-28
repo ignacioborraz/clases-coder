@@ -30,6 +30,7 @@ class CustomRouter {
     res.paginate = (response, info) =>
       res.json({ statusCode: 200, response, info });
     res.message201 = (message) => res.json({ statusCode: 201, message });
+    res.response201 = (message, response) => res.json({ statusCode: 201, message, response });
     res.error400 = (message) => res.json({ statusCode: 400, message });
     res.error401 = () =>
       res.json({ statusCode: 401, message: "Bad auth from poliecies!" });
@@ -54,6 +55,7 @@ class CustomRouter {
             (policies.includes("ADMIN") && role === 1)
           ) {
             const user = await usersManager.readByEmail(email);
+            delete user.password
             //proteger contraseña del usuario!!!
             req.user = user;
             return next();
